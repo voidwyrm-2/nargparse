@@ -143,7 +143,7 @@ proc parse*(self: Argparser, args: openArray[string]): seq[string] =
           lastFlag.add(arg)
         of ftSet:
           if arg in SetOpt(lastFlag).values:
-            raise newException(ArgparseError, fmt"Argument '{arg}' was already passed for flag {lastFlag.name}")
+            raise newException(ArgparseError, fmt"Argument '{arg}' was already passed for flag '{lastFlag.name}'")
 
           lastFlag.incl(arg)
 

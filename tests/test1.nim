@@ -5,9 +5,9 @@ import std/unittest
 import nargparse
 
 
-test "flag-and-args":
+test "flagAndArgs":
   let
-    argp = newArgparser("test-flag-and-args")
+    argp = newArgparser("test-flagAndArgs")
     fA = argp.flag(["a"])
     fB = argp.flag(["b"])
     args = argp.parse(["-a", "cat", "dog"])
@@ -28,14 +28,35 @@ test "opt":
   require not fWall.exists
   require args.len() == 0
 
-test "multi-opt":
+test "optList":
   let
-    argp = newArgparser("test-multi-opt")
+    argp = newArgparser("test-optList")
     fOutput = argp.opt(["o", "output"])
-    fIncl = argp.opts(["incl"])
+    fIncl = argp.optList(["incl"])
     args = argp.parse(["--incl", "libA", "--incl", "libB", "-incl", "libC"])
 
   require not fOutput.exists
   require fIncl.exists
   require fIncl.value() == @["libA", "libB", "libC"]
   require args.len() == 0
+
+test "optSet":
+  let
+    argp = newArgparser("test-optSet")
+    fColors = argp.optSet(["c", "colors"])
+    args = argp.parse(["-c", "red", "--colors", "green", "-colors", "blue"])
+
+  require fColors.exists
+  require fColors.value() == toHashSet(["red", "green", "blue"])
+  require args.len() == 0
+
+test "optSetError":
+  let
+    argp = newArgparser("test-optSetError")
+    fColors = argp.optSet(["c", "colors"])
+  
+  try:
+    discard argp.parse(["-c", "red", "--colors", "red", "-colors", "purple"])
+    require false
+  except ArgparseError as e:
+    require e.msg == "Argument 'red' was already passed for flag 'colors'"
