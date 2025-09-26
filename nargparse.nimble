@@ -1,7 +1,7 @@
 # Package
 
-version       = "0.1.0"
-author        = "Radioactivity"
+version       = "1.0.0"
+author        = "Nuclear Pasta"
 description   = "An console argument parsing libary"
 license       = "MIT"
 srcDir        = "src"
